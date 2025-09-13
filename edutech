@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTech University - Campus Information System</title>
+    <meta name="description" content="Complete campus information system with AI assistant for students, faculty, and visitors">
+    <meta name="keywords" content="campus, university, student services, academic calendar, dining, library, facilities">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--background);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* AI Chat Section */
+        .ai-chat-section {
+            padding: 4rem 0;
+            background: var(--surface);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        .message.user {
+            animation: slideInRight 0.3s ease;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border: 1px solid var(--border-color);
+            margin-right: auto;
+        }
+
+        .message.user .message-content {
+            background: var(--primary-color);
+            color: white;
+            margin-left: auto;
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            outline: none;
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .send-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .quick-action {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-action i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .quick-action h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .quick-action p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Information Sections */
+        .info-section {
+            padding: 4rem 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            space-y: 0.5rem;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 1rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-messages {
+                height: 300px;
+            }
+
+            .message-content {
+                max-width: 90%;
+            }
+        }
+
+        /* Loading Animation */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 1rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                EduTech University
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#chat">AI Assistant</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container">
+                <h1>Welcome to EduTech University</h1>
+                <p>Your comprehensive campus information system with AI-powered assistance</p>
+                <a href="#chat" class="cta-button">
+                    <i class="fas fa-robot"></i>
+                    Chat with AI Assistant
+                </a>
+            </div>
+        </section>
+
+        <section class="ai-chat-section" id="chat">
+            <div class="container">
+                <h2 class="section-title">Campus AI Assistant</h2>
+                
+                <div class="quick-actions">
+                    <div class="quick-action" onclick="sendQuickQuery('class schedule today')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Class Schedule</h3>
+                        <p>Get your daily class timetable and room locations</p>
+                    </div>
+                    <div class="quick-action" onclick="sendQuickQuery('dining hall hours')">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Dining Services</h3>
+                        <p>Check dining hall hours and today's menu</p>
+                    </div>
+                    <div class="quick-action" onclick="sendQuickQuery('library hours')">
+                        <i class="fas fa-book"></i>
+                        <h3>Library Services</h3>
+                        <p>Library hours, book search, and study spaces</p>
+                    </div>
+                    <div class="quick-action" onclick="sendQuickQuery('campus map facilities')">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Campus Map</h3>
+                        <p>Find buildings, facilities, and parking areas</p>
+                    </div>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-robot"></i> Campus AI Assistant</h3>
+                        <p>Ask me anything about campus services, schedules, and facilities!</p>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot">
+                            <div class="message-content">
+                                👋 Hello! I'm your campus AI assistant. I can help you with:
+                                <br>• Class schedules and room locations
+                                <br>• Dining hall hours and menus
+                                <br>• Library services and hours
+                                <br>• Campus facilities and maps
+                                <br>• Administrative procedures
+                                <br>• Student services
+                                <br><br>What would you like to know?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about campus services, schedules, facilities..." maxlength="500">
+                        <button class="send-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section" id="services">
+            <div class="container">
+                <h2 class="section-title">Campus Services</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-calendar-check"></i> Academic Calendar</h3>
+                        <ul>
+                            <li><span>Fall Semester</span> <span>Aug 28 - Dec 15</span></li>
+                            <li><span>Spring Semester</span> <span>Jan 15 - May 10</span></li>
+                            <li><span>Summer Session</span> <span>May 20 - Aug 15</span></li>
+                            <li><span>Registration</span> <span>Ongoing</span></li>
+                            <li><span>Finals Week</span> <span>Dec 8-15</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-utensils"></i> Dining Services</h3>
+                        <ul>
+                            <li><span>Main Dining Hall</span> <span>7AM - 9PM</span></li>
+                            <li><span>Student Union Cafe</span> <span>8AM - 8PM</span></li>
+                            <li><span>Library Cafe</span> <span>9AM - 6PM</span></li>
+                            <li><span>Food Court</span> <span>10AM - 10PM</span></li>
+                            <li><span>Late Night Dining</span> <span>9PM - 1AM</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-book-open"></i> Library Services</h3>
+                        <ul>
+                            <li><span>Main Library</span> <span>24/7 Access</span></li>
+                            <li><span>Study Rooms</span> <span>Reservation Required</span></li>
+                            <li><span>Computer Lab</span> <span>6AM - Midnight</span></li>
+                            <li><span>Research Help</span> <span>9AM - 9PM</span></li>
+                            <li><span>Printing Services</span> <span>Available 24/7</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-cogs"></i> Student Services</h3>
+                        <ul>
+                            <li><span>Registration Office</span> <span>8AM - 5PM</span></li>
+                            <li><span>Financial Aid</span> <span>9AM - 4PM</span></li>
+                            <li><span>Career Services</span> <span>8AM - 6PM</span></li>
+                            <li><span>Health Center</span> <span>24/7 Emergency</span></li>
+                            <li><span>IT Help Desk</span> <span>7AM - 10PM</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-dumbbell"></i> Recreation Center</h3>
+                        <ul>
+                            <li><span>Fitness Center</span> <span>5AM - 11PM</span></li>
+                            <li><span>Swimming Pool</span> <span>6AM - 10PM</span></li>
+                            <li><span>Basketball Courts</span> <span>6AM - 11PM</span></li>
+                            <li><span>Group Classes</span> <span>Various Times</span></li>
+                            <li><span>Equipment Rental</span> <span>8AM - 8PM</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-car"></i> Transportation</h3>
+                        <ul>
+                            <li><span>Campus Shuttle</span> <span>Every 15 mins</span></li>
+                            <li><span>Parking Permits</span> <span>Online Available</span></li>
+                            <li><span>Bike Rental</span> <span>$5/day</span></li>
+                            <li><span>Public Transit</span> <span>Free w/ Student ID</span></li>
+                            <li><span>Ride Share Hub</span> <span>Main Entrance</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section" id="about">
+            <div class="container">
+                <h2 class="section-title">About EduTech University</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Our Mission</h3>
+                        <p>To provide world-class education and foster innovation, critical thinking, and leadership in our diverse community of learners.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Campus Stats</h3>
+                        <ul>
+                            <li><span>Students</span> <span>25,000+</span></li>
+                            <li><span>Faculty</span> <span>1,200+</span></li>
+                            <li><span>Programs</span> <span>150+</span></li>
+                            <li><span>Campus Size</span> <span>500 acres</span></li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3>Contact Information</h3>
+                        <ul>
+                            <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                            <li><i class="fas fa-envelope"></i> info@edutech.edu</li>
+                            <li><i class="fas fa-map-marker-alt"></i> 123 University Ave</li>
+                            <li><i class="fas fa-clock"></i> Mon-Fri 8AM-6PM</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#chat">AI Assistant</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Student Services</h3>
+                    <ul>
+                        <li><a href="#">Registration</a></li>
+                        <li><a href="#">Financial Aid</a></li>
+                        <li><a href="#">Career Services</a></li>
+                        <li><a href="#">Health Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Library</a></li>
+                        <li><a href="#">Student Portal</a></li>
+                        <li><a href="#">Campus Map</a></li>
+                        <li><a href="#">Emergency Info</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@edutech.edu</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 University Ave</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 EduTech University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Campus Database
+        const campusDatabase = {
+            schedules: {
+                "monday": {
+                    "computer science": [
+                        { time: "9:00 AM", course: "CS 101 - Intro to Programming", room: "Tech Building 201", professor: "Dr. Smith" },
+                        { time: "11:00 AM", course: "CS 201 - Data Structures", room: "Tech Building 305", professor: "Dr. Johnson" },
+                        { time: "2:00 PM", course: "CS 301 - Algorithms", room: "Tech Building 401", professor: "Dr. Brown" }
+                    ],
+                    "business": [
+                        { time: "10:00 AM", course: "BUS 101 - Business Fundamentals", room: "Business Hall 101", professor: "Prof. Davis" },
+                        { time: "1:00 PM", course: "BUS 201 - Marketing", room: "Business Hall 205", professor: "Prof. Wilson" }
+                    ],
+                    "engineering": [
+                        { time: "8:00 AM", course: "ENG 101 - Engineering Design", room: "Engineering Center 150", professor: "Dr. Anderson" },
+                        { time: "3:00 PM", course: "ENG 301 - Thermodynamics", room: "Engineering Center 301", professor: "Dr. Taylor" }
+                    ]
+                }
+            },
+            dining: {
+                hours: {
+                    "main dining hall": "7:00 AM - 9:00 PM",
+                    "student union cafe": "8:00 AM - 8:00 PM",
+                    "library cafe": "9:00 AM - 6:00 PM",
+                    "food court": "10:00 AM - 10:00 PM"
+                },
+                menu: {
+                    today: {
+                        breakfast: ["Pancakes", "Scrambled Eggs", "Fresh Fruit", "Yogurt", "Cereal"],
+                        lunch: ["Grilled Chicken", "Vegetarian Pasta", "Caesar Salad", "Soup of the Day"],
+                        dinner: ["Beef Stir-fry", "Fish Tacos", "Pizza", "Salad Bar", "Dessert Bar"]
+                    }
+                }
+            },
+            library: {
+                hours: {
+                    "main library": "24/7 (Student ID Required)",
+                    "study rooms": "6:00 AM - 2:00 AM (Reservation Required)",
+                    "computer lab": "6:00 AM - Midnight",
+                    "research desk": "9:00 AM - 9:00 PM"
+                },
+                services: [
+                    "Book borrowing and returns",
+                    "Study room reservations",
+                    "Research assistance",
+                    "Printing and scanning",
+                    "Computer and internet access",
+                    "Group study spaces",
+                    "Quiet study areas"
+                ]
+            },
+            facilities: {
+                "academic buildings": [
+                    { name: "Technology Building", location: "North Campus", description: "Computer labs, engineering classrooms" },
+                    { name: "Business Hall", location: "Central Campus", description: "Business school, lecture halls" },
+                    { name: "Science Center", location: "East Campus", description: "Labs, research facilities" },
+                    { name: "Liberal Arts Building", location: "West Campus", description: "Humanities, social sciences" }
+                ],
+                "recreation": [
+                    { name: "Recreation Center", hours: "5:00 AM - 11:00 PM", facilities: ["Gym", "Pool", "Courts"] },
+                    { name: "Sports Complex", hours: "6:00 AM - 10:00 PM", facilities: ["Stadium", "Track", "Fields"] }
+                ],
+                "services": [
+                    { name: "Student Health Center", hours: "8:00 AM - 6:00 PM (24/7 Emergency)", location: "Central Campus" },
+                    { name: "Career Services", hours: "8:00 AM - 6:00 PM", location: "Student Union 200" },
+                    { name: "Financial Aid Office", hours: "9:00 AM - 4:00 PM", location: "Admin Building 150" }
+                ]
+            },
+            administrative: {
+                "registration": {
+                    office: "Registrar's Office - Admin Building 100",
+                    hours: "8:00 AM - 5:00 PM",
+                    services: ["Course registration", "Transcript requests", "Grade changes", "Graduation applications"]
+                },
+                "financial_aid": {
+                    office: "Financial Aid Office - Admin Building 150",
+                    hours: "9:00 AM - 4:00 PM",
+                    services: ["FAFSA assistance", "Scholarship information", "Student loans", "Work-study programs"]
+                },
+                "it_services": {
+                    office: "IT Help Desk - Library Ground Floor",
+                    hours: "7:00 AM - 10:00 PM",
+                    services: ["Password resets", "Software installation", "Network issues", "Email support"]
+                }
+            }
+        };
+
+        // AI Chat Functionality
+        class CampusAI {
+            constructor() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.chatInput = document.getElementById('chatInput');
+                this.sendBtn = document.getElementById('
